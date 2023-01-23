@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "skylore-additions",
+  "version": "0.1-1.18.2",
+  "name": "Skylore Additions",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/skylore-additions/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.aof.skyloreadditions.client.SkyloreAdditionsClient"
+    ],
+    "main": [
+      "com.aof.skyloreadditions.SkyloreAdditions"
+    ]
+  },
+  "mixins": [
+    "skylore-additions.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.10",
+    "fabric": "*",
+    "minecraft": "1.18.2"
+  }
+}
