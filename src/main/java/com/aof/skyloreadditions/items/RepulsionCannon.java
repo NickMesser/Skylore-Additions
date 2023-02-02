@@ -1,6 +1,7 @@
 package com.aof.skyloreadditions.items;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,21 +22,19 @@ public class RepulsionCannon extends Item {
         if(world.isClient)
             return super.use(world,user, hand);
 
-       var lookDirection = user.getRotationVector().normalize();
-       double pushStrength = .25f;
+        ItemStack stack = user.getStackInHand(hand);
+
+       double pushStrength = .5f;
        Box box = Box.from(user.getPos()).expand(10);
 
-       var test = world.getOtherEntities(user, box);
-       for (Entity entity: test){
-           if(user.canSee(entity)){
-               var entityRotation = entity.getPos();
-               var relativeRot = entityRotation.subtract(user.getRotationVector().normalize()).negate();
-               entity.setVelocity(entityRotation.multiply(pushStrength, relativeRot.y, relativeRot.z));
-           }
+       var entityList = world.getOtherEntities(user, box);
+       for (Entity entity: entityList){
+           var entityPos = entity.getPos().subtract(0,5,0);
+           var oppositeDirection = user.getPos().subtract(entityPos).multiply(-1);
+           entity.addVelocity(oppositeDirection.x * pushStrength, oppositeDirection.y * pushStrength, oppositeDirection.z * pushStrength);
        }
 
-
-        user.sendMessage(new LiteralText("Using my repulsion cannon!"), false);
+       stack.setDamage(stack.getDamage() + 100);
 
         return super.use(world, user, hand);
     }

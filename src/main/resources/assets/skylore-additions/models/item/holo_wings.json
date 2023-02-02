@@ -1,0 +1,117 @@
+{
+	"credit": "By Overgrown",
+	"texture_size": [16, 16],
+	"textures": {
+		"0": "skylore-additions:item/feather_wings_black_1",
+		"1": "skylore-additions:item/feather_wings_black_2",
+		"particle": "skylore-additions:item/feather_wings_black_1"
+	},
+	"elements": [
+		{
+			"name": "left_wing",
+			"from": [8, 0, -0.5],
+			"to": [27, 19, -0.5],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 0, 0]},
+			"faces": {
+				"north": {"uv": [4.75, 0, 9.5, 4.75], "texture": "#0"},
+				"east": {"uv": [0, 0, 0, 4.75], "texture": "#0"},
+				"south": {"uv": [4.75, 4.75, 9.5, 9.5], "texture": "#0"},
+				"west": {"uv": [0, 0, 0, 4.75], "texture": "#0"},
+				"up": {"uv": [4.75, 0, 0, 0], "texture": "#0"},
+				"down": {"uv": [4.75, 0, 0, 0], "texture": "#0"}
+			}
+		},
+		{
+			"name": "right_wing",
+			"from": [-11, 0, -0.5],
+			"to": [8, 19, -0.5],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 0, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 4.75, 4.75], "texture": "#0"},
+				"east": {"uv": [0, 0, 0, 4.75], "texture": "#0"},
+				"south": {"uv": [0, 4.75, 4.75, 9.5], "texture": "#0"},
+				"west": {"uv": [0, 0, 0, 4.75], "texture": "#0"},
+				"up": {"uv": [4.75, 0, 0, 0], "texture": "#0"},
+				"down": {"uv": [4.75, 0, 0, 0], "texture": "#0"}
+			}
+		},
+		{
+			"name": "left_wing",
+			"from": [8.25, 0, -0.25],
+			"to": [8.25, 19, 18.75],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 0, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 4.75], "texture": "#1"},
+				"east": {"uv": [0, 0, 4.75, 4.75], "texture": "#1"},
+				"south": {"uv": [0, 0, 0, 4.75], "texture": "#1"},
+				"west": {"uv": [0, 4.75, 4.75, 9.5], "texture": "#1"},
+				"up": {"uv": [0, 4.75, 0, 0], "texture": "#1"},
+				"down": {"uv": [0, 0, 0, 4.75], "texture": "#1"}
+			}
+		},
+		{
+			"name": "right_wing",
+			"from": [7.75, 0, -0.25],
+			"to": [7.75, 19, 18.75],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 0, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 4.75], "texture": "#1"},
+				"east": {"uv": [4.75, 0, 9.5, 4.75], "texture": "#1"},
+				"south": {"uv": [0, 0, 0, 4.75], "texture": "#1"},
+				"west": {"uv": [4.75, 4.75, 9.5, 9.5], "texture": "#1"},
+				"up": {"uv": [0, 4.75, 0, 0], "texture": "#1"},
+				"down": {"uv": [0, 0, 0, 4.75], "texture": "#1"}
+			}
+		}
+	],
+	"gui_light": "front",
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [67, 0, 0],
+			"translation": [-6, -17.5, 20.5],
+			"scale": [2, 2, 2]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [67, 0, 0],
+			"translation": [-6, -17.5, 20.5],
+			"scale": [2, 2, 2]
+		},
+		"firstperson_righthand": {
+			"scale": [0, 0, 0]
+		},
+		"firstperson_lefthand": {
+			"scale": [0, 0, 0]
+		},
+		"ground": {
+			"translation": [-1.25, 4.75, 0]
+		},
+		"gui": {
+			"rotation": [0, -180, 0],
+			"translation": [0.25, -1, 0],
+			"scale": [0.84, 0.7, 0.7]
+		},
+		"head": {
+			"translation": [-0.25, 5.75, 23],
+			"scale": [2, 2, 2]
+		},
+		"fixed": {
+			"rotation": [0, -180, 0],
+			"translation": [-0.25, -0.25, -5.5],
+			"scale": [0.7, 0.7, 0.7]
+		}
+	},
+	"groups": [
+		{
+			"name": "feather_wings_open",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [0, 1]
+		},
+		{
+			"name": "feather_wings_close",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [2, 3]
+		}
+	]
+}
