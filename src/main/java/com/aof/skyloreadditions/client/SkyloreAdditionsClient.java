@@ -2,6 +2,7 @@ package com.aof.skyloreadditions.client;
 
 import com.aof.skyloreadditions.entity.client.armor.CryoBootsRenderer;
 import com.aof.skyloreadditions.entity.client.armor.HoloWingsRenderer;
+import com.aof.skyloreadditions.handler.InputHandler;
 import com.aof.skyloreadditions.items.ModItems;
 import com.aof.skyloreadditions.items.armor.WoodenJetpack;
 import net.fabricmc.api.ClientModInitializer;
@@ -40,14 +41,8 @@ public class SkyloreAdditionsClient implements ClientModInitializer {
     private static void clientTick(MinecraftClient client) {
         PlayerEntity player = client.player;
         if(player == null) return;
-        ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
-        Item item = chest.getItem();
-        if(item instanceof WoodenJetpack){
-            if(client.options.jumpKey.isPressed()){
-                player.setVelocity(player.getVelocity().x, 0.1, player.getVelocity().z);
-                chest.setDamage(chest.getDamage() + 10);
-            }
-        }
+        Boolean jump = client.options.jumpKey.isPressed();
+        InputHandler.update(player, jump);
     }
 
 }

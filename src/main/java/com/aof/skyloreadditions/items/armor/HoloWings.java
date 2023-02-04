@@ -39,7 +39,7 @@ public class HoloWings extends ArmorItem implements IAnimatable {
             if(!player.isOnGround() && !player.isCreative()){
                 if(player.fallDistance > 3 && !player.hasStatusEffect(StatusEffects.SLOW_FALLING)){
                     world.playSoundFromEntity(null, player, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    stack.setDamage(stack.getDamage() + 10);
+                    stack.damage(10, player, (p) -> p.sendEquipmentBreakStatus(EquipmentSlot.CHEST));
                     player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 100, 0, false, true, true));
 
                 }

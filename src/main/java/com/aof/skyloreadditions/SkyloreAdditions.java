@@ -1,8 +1,11 @@
 package com.aof.skyloreadditions;
 
 import com.aof.skyloreadditions.blocks.ModBlocks;
+import com.aof.skyloreadditions.handler.InputHandler;
 import com.aof.skyloreadditions.items.ModItems;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,5 +19,6 @@ public class SkyloreAdditions implements ModInitializer {
 
         ModItems.registerModItems();
         ModBlocks.registerModBlocks();
+        ServerStopCallback.EVENT.register(server -> InputHandler.clear());
     }
 }

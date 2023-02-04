@@ -1,5 +1,6 @@
 package com.aof.skyloreadditions.items.armor;
 
+import com.aof.skyloreadditions.handler.InputHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -22,19 +23,17 @@ public class WoodenJetpack extends ArmorItem {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if(entity instanceof PlayerEntity player){
+
+        if(entity instanceof PlayerEntity player) {
             ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
             Item item = chest.getItem();
-            if(!chest.isEmpty() && item instanceof WoodenJetpack){
+            if (!chest.isEmpty() && item instanceof WoodenJetpack) {
+                if (InputHandler.isHoldingUp(player)) {
+                    player.setVelocity(player.getVelocity().x, 0.1, player.getVelocity().z);
+                    stack.damage(1, player, (p) -> p.sendEquipmentBreakStatus(EquipmentSlot.CHEST));
+                }
             }
         }
-
-        if (entity instanceof PlayerEntity player && player.getEquippedStack(EquipmentSlot.CHEST) == stack && player.getEquippedStack(EquipmentSlot.CHEST).getItem() == this) {
-            if(!player.isOnGround() && !player.isCreative()){
-
-            }
-        }
-
         super.inventoryTick(stack, world, entity, slot, selected);
     }
 
