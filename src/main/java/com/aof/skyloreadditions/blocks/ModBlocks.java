@@ -15,6 +15,9 @@ public class ModBlocks {
     public static final Block DIMENSIONAL_ICE = registerBlock("dimensional_ice",
             new DimensionalIce(FabricBlockSettings.of(Material.METAL).strength(6f).requiresTool()), ItemGroup.MISC);
 
+    public static final Block CLEAR_BLOCK = registerBlock("clear_block",
+            new ClearBlock(FabricBlockSettings.of(Material.METAL).strength(6f).requiresTool().nonOpaque()), ItemGroup.MISC);
+
     private static Block registerBlock(String name, Block block, ItemGroup group) {
         registerBlockItem(name, block, group);
         return Registry.register(Registry.BLOCK, new Identifier(SkyloreAdditions.MOD_ID, name), block);

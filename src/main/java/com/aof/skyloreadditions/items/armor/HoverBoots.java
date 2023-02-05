@@ -2,12 +2,11 @@ package com.aof.skyloreadditions.items.armor;
 
 import com.aof.skyloreadditions.blocks.ModBlocks;
 import com.aof.skyloreadditions.items.ModItems;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.player.ItemCooldownManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
@@ -16,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -30,42 +28,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CryoBoots extends ArmorItem implements IAnimatable {
+public class HoverBoots extends ArmorItem implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
-    public CryoBoots(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
+    public HoverBoots(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
         super(material, slot, settings);
     }
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         if(entity instanceof PlayerEntity player){
-            ItemStack equippedStack = player.getEquippedStack(EquipmentSlot.FEET);
-            if(equippedStack != stack || equippedStack.getItem() != this)
-                return;
-
-
-            for (int i = 0; i < 3; i++) { // check 3 blocks below the player
-                BlockPos pos = player.getBlockPos().down(i);
-                if(!world.getBlockState(pos).isAir())
-                    return;
-            }
-            ItemStack iceStack = null;
-            for (ItemStack inventoryStack: player.getInventory().main){
-                if(inventoryStack.getItem() == ModBlocks.DIMENSIONAL_ICE.asItem()){
-                    iceStack = inventoryStack;
+            ItemStack boots = player.getEquippedStack(EquipmentSlot.FEET);
+            if(boots.getItem() instanceof HoverBoots hoverBoots){
+                ItemCooldownManager itemCooldownManager = player.getItemCooldownManager();
+                if(!itemCooldownManager.isCoolingDown(hoverBoots)){
+                    for (int i = 0; i < 3; i++) { // check 3 blocks below the player and returns if its anything but air
+                        BlockPos pos = player.getBlockPos().down(i);
+                        if(!world.getBlockState(pos).isAir())
+                            return;
+                    }
                 }
+                if(!itemCooldownManager.isCoolingDown(hoverBoots))
+                    itemCooldownManager.set(hoverBoots, 150);
+
+                if(player.getItemCooldownManager().getCooldownProgress(hoverBoots, 0) > .5){
+                    BlockPos pos = player.getBlockPos().down();
+                    if(!world.getBlockState(pos).isAir())
+                        return;
+                    world.setBlockState(pos, ModBlocks.CLEAR_BLOCK.getDefaultState());
+                    world.createAndScheduleBlockTick(pos, ModBlocks.CLEAR_BLOCK,40);
+                }
+
             }
-
-            if (iceStack == null)
-                return;
-
-            iceStack.setCount(iceStack.getCount() - 1);
-            BlockPos pos = player.getBlockPos().down();
-
-            var newBlock = world.setBlockState(pos, ModBlocks.DIMENSIONAL_ICE.getDefaultState());
-            if(world.getBlockState(pos).getBlock() != ModBlocks.DIMENSIONAL_ICE)
-                player.sendMessage(new LiteralText("Failed to place block!"), false);
-            world.createAndScheduleBlockTick(pos, ModBlocks.DIMENSIONAL_ICE, 40);
         }
 
         super.inventoryTick(stack, world, entity, slot, selected);
@@ -102,7 +95,7 @@ public class CryoBoots extends ArmorItem implements IAnimatable {
 
             // Make sure the player is wearing all the armor. If they are, continue playing
             // the animation, otherwise stop
-            boolean isWearingAll = armorList.containsAll(Arrays.asList(ModItems.CRYO_BOOTS));
+            boolean isWearingAll = armorList.containsAll(Arrays.asList(ModItems.HOVER_BOOTS));
             return isWearingAll ? PlayState.CONTINUE : PlayState.STOP;
         }
         return PlayState.STOP;

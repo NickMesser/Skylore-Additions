@@ -21,6 +21,9 @@ public enum ModArmorMaterials implements ArmorMaterial {
     }),
     WOODEN_JETPACK("wooden_jetpack", 40, new int[]{0, 0, 0, 0}, 20, SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 0F, 0F, () -> {
         return Ingredient.ofItems(Items.COAL_BLOCK);
+    }),
+    HOVER_BOOTS("hover_boots", 40, new int[]{3, 0, 0, 0}, 20, SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 0F, 0F, () -> {
+        return Ingredient.ofItems(Items.SHULKER_SHELL);
     })
     ;
 
