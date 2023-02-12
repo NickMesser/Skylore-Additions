@@ -4,6 +4,7 @@ import com.aof.skyloreadditions.blocks.ModBlocks;
 import com.aof.skyloreadditions.entity.client.armor.CryoBootsRenderer;
 import com.aof.skyloreadditions.entity.client.armor.HoloWingsRenderer;
 import com.aof.skyloreadditions.entity.client.armor.HoverBootsRenderer;
+import com.aof.skyloreadditions.entity.client.armor.WoodenJetpackRenderer;
 import com.aof.skyloreadditions.handler.InputHandler;
 import com.aof.skyloreadditions.items.ModItems;
 import net.fabricmc.api.ClientModInitializer;
@@ -11,6 +12,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,6 +29,7 @@ public class SkyloreAdditionsClient implements ClientModInitializer {
         GeoArmorRenderer.registerArmorRenderer(new CryoBootsRenderer(), ModItems.CRYO_BOOTS);
         GeoArmorRenderer.registerArmorRenderer(new HoloWingsRenderer(), ModItems.HOLO_WINGS);
         GeoArmorRenderer.registerArmorRenderer(new HoverBootsRenderer(), ModItems.HOVER_BOOTS);
+        GeoArmorRenderer.registerArmorRenderer(new WoodenJetpackRenderer(), ModItems.WOODEN_JETPACK);
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CLEAR_BLOCK, RenderLayer.getTranslucent());
 
