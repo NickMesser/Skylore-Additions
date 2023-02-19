@@ -2,10 +2,7 @@ package com.aof.skyloreadditions.items;
 
 import com.aof.skyloreadditions.SkyloreAdditions;
 import com.aof.skyloreadditions.armor.ModArmorMaterials;
-import com.aof.skyloreadditions.items.armor.CryoBoots;
-import com.aof.skyloreadditions.items.armor.HoloWings;
-import com.aof.skyloreadditions.items.armor.HoverBoots;
-import com.aof.skyloreadditions.items.armor.WoodenJetpack;
+import com.aof.skyloreadditions.items.armor.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
@@ -28,7 +25,10 @@ public class ModItems {
             new CryoBoots(ModArmorMaterials.CRYO_BOOTS, EquipmentSlot.FEET, new FabricItemSettings().group(ItemGroup.MISC)));
 
     public static final Item HOVER_BOOTS  = registerItem("hover_boots",
-            new HoverBoots(ModArmorMaterials.CRYO_BOOTS, EquipmentSlot.FEET, new FabricItemSettings().group(ItemGroup.MISC)));
+            new HoverBoots(ModArmorMaterials.HOVER_BOOTS, EquipmentSlot.FEET, new FabricItemSettings().group(ItemGroup.MISC)));
+
+    public static final Item MECH_LEGS  = registerItem("mech_legs",
+            new MechLegs(ModArmorMaterials.HOVER_BOOTS, EquipmentSlot.LEGS, new FabricItemSettings().group(ItemGroup.MISC)));
 
     public static final Item WOODEN_JETPACK  = registerItem("wooden_jetpack",
             new WoodenJetpack(ModArmorMaterials.WOODEN_JETPACK, EquipmentSlot.CHEST, new FabricItemSettings().group(ItemGroup.MISC)));

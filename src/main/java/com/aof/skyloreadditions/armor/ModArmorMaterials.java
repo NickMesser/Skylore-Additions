@@ -19,7 +19,7 @@ public enum ModArmorMaterials implements ArmorMaterial {
     CRYO_BOOTS("cryo_boots", 37, new int[]{2, 6, 2, 3}, 20, SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 0F, 0F, () -> {
         return Ingredient.ofItems(Items.BLUE_ICE);
     }),
-    WOODEN_JETPACK("wooden_jetpack", 40, new int[]{0, 0, 0, 0}, 20, SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 0F, 0F, () -> {
+    WOODEN_JETPACK("wooden_jetpack", 30, new int[]{0, 0, 2, 0}, 20, SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 0F, 0F, () -> {
         return Ingredient.ofItems(Items.COAL_BLOCK);
     }),
     HOVER_BOOTS("hover_boots", 40, new int[]{3, 0, 0, 0}, 20, SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 0F, 0F, () -> {

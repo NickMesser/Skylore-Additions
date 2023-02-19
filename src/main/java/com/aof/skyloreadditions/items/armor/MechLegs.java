@@ -1,24 +1,18 @@
 package com.aof.skyloreadditions.items.armor;
 
-import com.aof.skyloreadditions.blocks.ModBlocks;
 import com.aof.skyloreadditions.items.ModItems;
-import net.minecraft.client.item.TooltipContext;
+import com.eliotlash.mclib.math.functions.classic.Mod;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.player.ItemCooldownManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -31,37 +25,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HoverBoots extends ArmorItem implements IAnimatable {
+public class MechLegs extends ArmorItem implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
-    public HoverBoots(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
+    public MechLegs(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
         super(material, slot, settings);
     }
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         if(entity instanceof PlayerEntity player){
-            ItemStack boots = player.getEquippedStack(EquipmentSlot.FEET);
-            if(boots.getItem() instanceof HoverBoots hoverBoots){
-                ItemCooldownManager itemCooldownManager = player.getItemCooldownManager();
-                if(!itemCooldownManager.isCoolingDown(hoverBoots)){
-                    for (int i = 0; i < 3; i++) { // check 3 blocks below the player and returns if its anything but air
-                        BlockPos pos = player.getBlockPos().down(i);
-                        if(!world.getBlockState(pos).isAir())
-                            return;
-                    }
-                }
-                if(!itemCooldownManager.isCoolingDown(hoverBoots))
-                    itemCooldownManager.set(hoverBoots, 150);
+            ItemStack equippedStack = player.getEquippedStack(EquipmentSlot.LEGS);
+            if(equippedStack != stack || equippedStack.getItem() != this)
+                return;
 
-                if(player.getItemCooldownManager().getCooldownProgress(hoverBoots, 0) > .5){
-                    BlockPos pos = player.getBlockPos().down();
-                    if(!world.getBlockState(pos).isAir())
-                        return;
-                    world.setBlockState(pos, ModBlocks.CLEAR_BLOCK.getDefaultState());
-                    world.createAndScheduleBlockTick(pos, ModBlocks.CLEAR_BLOCK,40);
-                }
-
+            if(player.fallDistance > 4){
+                player.fallDistance = player.fallDistance * .25f;
             }
+
         }
 
         super.inventoryTick(stack, world, entity, slot, selected);
@@ -98,7 +78,7 @@ public class HoverBoots extends ArmorItem implements IAnimatable {
 
             // Make sure the player is wearing all the armor. If they are, continue playing
             // the animation, otherwise stop
-            boolean isWearingAll = armorList.containsAll(Arrays.asList(ModItems.HOVER_BOOTS));
+            boolean isWearingAll = armorList.containsAll(Arrays.asList(ModItems.MECH_LEGS));
             return isWearingAll ? PlayState.CONTINUE : PlayState.STOP;
         }
         return PlayState.STOP;
@@ -115,11 +95,5 @@ public class HoverBoots extends ArmorItem implements IAnimatable {
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
-    }
-
-    @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(new LiteralText("§7§oAllows a short period of hovering."));
-        super.appendTooltip(stack, world, tooltip, context);
     }
 }

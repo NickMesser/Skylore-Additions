@@ -1,6 +1,8 @@
 package com.aof.skyloreadditions.items.armor;
 
 import com.aof.skyloreadditions.items.ModItems;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -14,7 +16,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -26,6 +31,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class HoloWings extends ArmorItem implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
@@ -36,14 +42,21 @@ public class HoloWings extends ArmorItem implements IAnimatable {
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         if (entity instanceof PlayerEntity player && player.getEquippedStack(EquipmentSlot.CHEST) == stack && player.getEquippedStack(EquipmentSlot.CHEST).getItem() == this) {
-            if(!player.isOnGround() && !player.isCreative()){
-                if(player.fallDistance > 3 && !player.hasStatusEffect(StatusEffects.SLOW_FALLING)){
-                    world.playSoundFromEntity(null, player, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    stack.damage(10, player, (p) -> p.sendEquipmentBreakStatus(EquipmentSlot.CHEST));
-                    player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 100, 0, false, true, true));
-
-                }
+            for (int i = 0; i < 3; i++) { // check 3 blocks below the player and returns if its anything but air
+                BlockPos pos = player.getBlockPos().down(i);
+                if(!world.getBlockState(pos).isAir())
+                    return;
             }
+
+            if(player.isCreative())
+                return;
+
+            if(player.hasStatusEffect(StatusEffects.SLOW_FALLING))
+                return;
+
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 100, 0, false, true, true));
+            stack.damage(10, player, (p) -> p.sendEquipmentBreakStatus(EquipmentSlot.CHEST));
+
         }
         super.inventoryTick(stack, world, entity, slot, selected);
     }
@@ -96,5 +109,12 @@ public class HoloWings extends ArmorItem implements IAnimatable {
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+        tooltip.add(Text.of("§7§oWings that allow you to"));
+        tooltip.add(Text.of("§7§osafetly fall from great heights."));
+        super.appendTooltip(stack, world, tooltip, context);
     }
 }
