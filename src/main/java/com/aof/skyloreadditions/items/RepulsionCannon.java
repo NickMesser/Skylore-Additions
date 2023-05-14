@@ -5,6 +5,7 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -32,9 +33,10 @@ public class RepulsionCannon extends Item {
            var entityPos = entity.getPos().subtract(0,5,0);
            var oppositeDirection = user.getPos().subtract(entityPos).multiply(-1);
            entity.addVelocity(oppositeDirection.x * pushStrength, oppositeDirection.y * pushStrength, oppositeDirection.z * pushStrength);
+           world.addParticle(ParticleTypes.CLOUD, entityPos.x, entityPos.y, entityPos.z, 0, 0, 0);
        }
 
-       stack.setDamage(stack.getDamage() + 100);
+       stack.damage(10, user, (p) -> p.sendToolBreakStatus(hand));
 
         return super.use(world, user, hand);
     }

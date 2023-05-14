@@ -62,7 +62,6 @@ public class CryoBoots extends ArmorItem implements IAnimatable {
             iceStack.setCount(iceStack.getCount() - 1);
             BlockPos pos = player.getBlockPos().down();
 
-            var newBlock = world.setBlockState(pos, ModBlocks.DIMENSIONAL_ICE.getDefaultState());
             if(world.getBlockState(pos).getBlock() != ModBlocks.DIMENSIONAL_ICE)
                 player.sendMessage(new LiteralText("Failed to place block!"), false);
             world.createAndScheduleBlockTick(pos, ModBlocks.DIMENSIONAL_ICE, 40);

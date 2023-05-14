@@ -40,6 +40,7 @@ public class MechLegs extends ArmorItem implements IAnimatable {
 
             if(player.fallDistance > 4){
                 player.fallDistance = player.fallDistance * .25f;
+                stack.damage(1, player, (p) -> p.sendEquipmentBreakStatus(EquipmentSlot.LEGS));
             }
 
         }

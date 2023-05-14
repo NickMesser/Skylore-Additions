@@ -54,7 +54,8 @@ public class HoloWings extends ArmorItem implements IAnimatable {
             if(player.hasStatusEffect(StatusEffects.SLOW_FALLING))
                 return;
 
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 100, 0, false, true, true));
+
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 100, 0, false, true, false));
             stack.damage(10, player, (p) -> p.sendEquipmentBreakStatus(EquipmentSlot.CHEST));
 
         }

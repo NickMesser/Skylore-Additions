@@ -7,16 +7,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.player.ItemCooldownManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -32,6 +32,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HoverBoots extends ArmorItem implements IAnimatable {
+    private float currentCooldown = 0;
+    private final float maxCooldown = 150;
+    private final float maxUseTime = 75;
+    private float currentUseTime = 0;
+
+    private Boolean isUsing = false;
+    private float stillTime = 0;
+
+    private BlockPos lastBlockPosition = new BlockPos(0,0,0);
+
     private final AnimationFactory factory = new AnimationFactory(this);
     public HoverBoots(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
         super(material, slot, settings);
@@ -39,28 +49,60 @@ public class HoverBoots extends ArmorItem implements IAnimatable {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+        if(!stack.hasNbt())
+            write_nbt(stack);
+        read_nbt(stack);
+
+
         if(entity instanceof PlayerEntity player){
             ItemStack boots = player.getEquippedStack(EquipmentSlot.FEET);
             if(boots.getItem() instanceof HoverBoots hoverBoots){
-                ItemCooldownManager itemCooldownManager = player.getItemCooldownManager();
-                if(!itemCooldownManager.isCoolingDown(hoverBoots)){
-                    for (int i = 0; i < 3; i++) { // check 3 blocks below the player and returns if its anything but air
+                if(!checkCanUse(stack))
+                {
+                    updateCooldown(stack, currentCooldown - 1);
+                    return;
+                }
+
+                if(!isUsing && checkCanUse(stack)){
+                    for (int i = 0; i < 2; i++) { // check 3 blocks below the player and returns if its anything but air
                         BlockPos pos = player.getBlockPos().down(i);
                         if(!world.getBlockState(pos).isAir())
                             return;
                     }
                 }
-                if(!itemCooldownManager.isCoolingDown(hoverBoots))
-                    itemCooldownManager.set(hoverBoots, 150);
-
-                if(player.getItemCooldownManager().getCooldownProgress(hoverBoots, 0) > .5){
-                    BlockPos pos = player.getBlockPos().down();
-                    if(!world.getBlockState(pos).isAir())
-                        return;
-                    world.setBlockState(pos, ModBlocks.CLEAR_BLOCK.getDefaultState());
-                    world.createAndScheduleBlockTick(pos, ModBlocks.CLEAR_BLOCK,40);
+                isUsing = true;
+                if(currentUseTime < maxUseTime){
+                    updateUseTime(stack, currentUseTime + 1);
                 }
 
+
+                if(currentUseTime >= maxUseTime)
+                    setCoolDown(stack);
+
+                BlockPos currentPosition = player.getBlockPos();
+
+                if(currentPosition.getY() > lastBlockPosition.getY())
+                    setCoolDown(stack);
+
+                if(currentPosition.equals(lastBlockPosition)){
+                    updateStillTime(stack, stillTime += 1);
+                    if(stillTime >= 5){
+                        setCoolDown(stack);
+                    }
+                }
+                else {
+                    stillTime = 0;
+                    updateStillTime(stack, 0);
+                }
+                updatePosition(stack, currentPosition);
+
+                BlockPos pos = player.getBlockPos().down();
+                
+                if(!world.getBlockState(pos).isAir())
+                    setCoolDown(stack);
+
+                world.setBlockState(pos, ModBlocks.CLEAR_BLOCK.getDefaultState());
+                world.createAndScheduleBlockTick(pos, ModBlocks.CLEAR_BLOCK,2);
             }
         }
 
@@ -121,5 +163,78 @@ public class HoverBoots extends ArmorItem implements IAnimatable {
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         tooltip.add(new LiteralText("§7§oAllows a short period of hovering."));
         super.appendTooltip(stack, world, tooltip, context);
+    }
+
+    public boolean checkCanUse(ItemStack stack) {
+        Boolean canUse = true;
+        if(currentCooldown > 0) {
+            canUse = false;
+        } else {
+            canUse = true;
+        }
+
+        return canUse;
+    }
+
+    public void setCoolDown(ItemStack stack) {
+        updateCooldown(stack, maxCooldown);
+        updateUseTime(stack, 0);
+        isUsing = false;
+    }
+
+    public void read_nbt(ItemStack stack) {
+        NbtCompound tag = stack.getOrCreateNbt();
+        if(tag.contains("lastBlockPosition")){
+            lastBlockPosition = BlockPos.fromLong(tag.getLong("lastBlockPosition"));
+        }
+
+        if(tag.contains("stillTime")){
+            this.stillTime = tag.getFloat("stillTime");
+        }
+
+        lastBlockPosition = new BlockPos(currentX, currentY, currentZ);
+
+        if(tag.contains("currentUseTime")){
+            this.currentUseTime = tag.getFloat("currentUseTime");
+        }
+
+        if (tag.contains("cooldown")) {
+            this.currentCooldown = tag.getFloat("cooldown");
+        }
+        else {
+            this.currentCooldown = 0;
+        }
+    }
+
+    private void write_nbt(ItemStack stack) {
+        NbtCompound tag = stack.getOrCreateNbt();
+        tag.putLong("lastBlockPosition", lastBlockPosition.asLong());
+        tag.putFloat("currentUseTime", currentUseTime);
+        tag.putFloat("cooldown", currentCooldown);
+        tag.putFloat("stillTime", stillTime);
+    }
+
+    public void updateCooldown(ItemStack stack, float cooldown) {
+        NbtCompound tag = stack.getOrCreateNbt();
+        tag.putFloat("cooldown", cooldown);
+    }
+
+    public void updateUseTime(ItemStack stack, float useTime) {
+        if (currentUseTime >= maxUseTime) {
+            useTime = 0;
+        }
+
+        NbtCompound tag = stack.getOrCreateNbt();
+        tag.putFloat("currentUseTime", useTime);
+    }
+
+    private void updatePosition(ItemStack stack, BlockPos pos) {
+        NbtCompound tag = stack.getOrCreateNbt();
+        tag.putLong("lastBlockPosition", pos.asLong());
+    }
+
+    public void updateStillTime(ItemStack stack, float stillTime) {
+        NbtCompound tag = stack.getOrCreateNbt();
+        tag.putFloat("stillTime", stillTime);
     }
 }
